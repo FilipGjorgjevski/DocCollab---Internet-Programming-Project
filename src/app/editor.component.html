@@ -1,6 +1,6 @@
 <div class="container">
   
-  <!-- THE TOOLBAR -->
+  <!-- TOOLBAR -->
   <div class="toolbar">
     <button (click)="formatDoc('bold')" title="Bold"><b>B</b></button>
     <button (click)="formatDoc('italic')" title="Italic"><i>I</i></button>
@@ -14,64 +14,72 @@
       <option value="7">Huge</option>
     </select>
 
-    <!-- Font Color Picker -->
+    <!-- Font Color -->
     <span class="color-wrapper" title="Text Color">
       <span>A</span>
       <input type="color" (input)="onColorChange('foreColor', $event)">
     </span>
 
-    <!-- Background Color Picker -->
+    <!-- Highlight Color -->
     <span class="color-wrapper" title="Highlight Color" style="background: yellow;">
       <span>H</span>
       <input type="color" (input)="onColorChange('hiliteColor', $event)">
     </span>
   </div>
 
-  <!-- THE DOCUMENT (Now a DIV) -->
-  <div 
+  <!-- EDITOR PAPER -->
+<div 
     #editor
     class="editor" 
     contenteditable="true"
     (input)="onContentChange()"
     spellcheck="false">
-    <!-- Default text -->
-    <div>Start collaborating...</div>
+    <!-- LEAVE THIS EMPTY so the Server fills it -->
   </div>
 
-  <!-- THE CURSORS (Same as before) -->
+  <!-- REMOTE CURSORS -->
   <div 
     *ngFor="let cursor of cursors | keyvalue"
     class="remote-cursor"
     [style.transform]="'translate3d(' + cursor.value.x + 'px, ' + cursor.value.y + 'px, 0)'">
     
+    <!-- Arrow SVG -->
     <svg class="cursor-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19177L11.7841 12.3673H5.65376Z" 
             [style.fill]="cursor.value.color" stroke="white" stroke-width="1"/>
     </svg>
     
+    <!-- Name Label -->
     <div class="cursor-label" [style.backgroundColor]="cursor.value.color">
-      User {{ cursor.key.substr(0, 4) }}
+        <!-- If name exists AND is not 'Anonymous', show it. Otherwise show ID -->
+        {{ (cursor.value.name && cursor.value.name !== 'Anonymous') ? cursor.value.name : 'User ' + cursor.key.substr(0, 4) }}
     </div>
   </div>
- <!-- THE CHAT SIDEBAR -->
+
+  <!-- CHAT SIDEBAR -->
   <div class="chat-sidebar">
     <div class="chat-header">
       <h3>Chat</h3>
     </div>
 
-    <!-- Message History -->
     <div class="chat-history">
       <div *ngFor="let msg of chatMessages" class="chat-bubble">
-        <!-- Colored dot to show who sent it -->
+        <!-- Color Dot -->
         <div class="user-dot" [style.backgroundColor]="msg.color"></div>
+        
+        <!-- Message Content -->
         <div class="message-content">
+          <!-- Name of sender -->
+          <div style="font-size: 10px; font-weight: bold; color: #555; margin-bottom: 2px;">
+            {{ msg.name || 'Anonymous' }}
+          </div>
           <div class="message-text">{{ msg.text }}</div>
           <div class="message-time">{{ msg.time | date:'shortTime' }}</div>
         </div>
       </div>
     </div>
 
-    <!-- Input Area -->
+    <!-- Chat Input -->
     <div class="chat-input">
       <input 
         type="text" 
@@ -83,4 +91,4 @@
     </div>
   </div>
 
-</div> <!-- Closing tag of main .container -->
+</div>

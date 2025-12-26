@@ -5,57 +5,72 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class SocketService { // We keep the class name "SocketService"
+export class SocketService {
   private socket: Socket;
 
+  // Initialize username from LocalStorage or default to 'Anonymous'
+  username: string = localStorage.getItem('username') || 'Anonymous';
+
   constructor() {
-    this.socket = io('http://10.198.93.8:3000');
+    // Dynamic URL: Works on localhost AND on your phone (IP address)
+    const serverUrl = `http://${window.location.hostname}:3000`;
+    this.socket = io(serverUrl);
   }
 
-  emitCursor(x: number, y: number, color: string) {
-    this.socket.emit('cursor-move', { x, y, color });
+  // Helper: Update name and save it so it survives refresh
+  setName(name: string) {
+    this.username = name;
+    localStorage.setItem('username', name);
   }
+
 
   onCursorMove(): Observable<any> {
     return new Observable(observer => {
-      this.socket.on('cursor-move', (data) => {
-        observer.next(data);
-      });
+      this.socket.on('cursor-move', (data) => observer.next(data));
     });
   }
 
   onUserDisconnect(): Observable<string> {
     return new Observable(observer => {
-      this.socket.on('user-disconnected', (id) => {
-        observer.next(id);
-      });
+      this.socket.on('user-disconnected', (id) => observer.next(id));
     });
   }
-  // NEW: Send text to server
+
+  // --- 2. DOCUMENT TEXT ---
   emitText(text: string) {
     this.socket.emit('text-change', text);
   }
 
-  // NEW: Listen for text updates
   onTextUpdate(): Observable<string> {
     return new Observable(observer => {
-      this.socket.on('text-update', (text) => {
-        observer.next(text);
-      });
+      this.socket.on('text-update', (text) => observer.next(text));
     });
   }
 
-  // Send a chat message with my color
+  // --- 3. CHAT ---
   emitChat(text: string, color: string) {
-    this.socket.emit('send-chat', { text, color, timestamp: new Date() });
+    this.socket.emit('send-chat', { 
+      text, color, 
+      name: this.username, // Send the name with the message
+      timestamp: new Date() 
+    });
   }
 
-  // Listen for incoming chats
   onChatReceive(): Observable<any> {
     return new Observable(observer => {
-      this.socket.on('receive-chat', (data) => {
-        observer.next(data);
-      });
+      this.socket.on('receive-chat', (data) => observer.next(data));
+    });
+  }
+   // Update this function to ensure name is ALWAYS attached
+   emitCursor(x: number, y: number, color: string) {
+    // 1. Double check we have a name, if not, grab it again
+    if (!this.username || this.username === 'Anonymous') {
+      this.username = localStorage.getItem('username') || 'Anonymous';
+    }
+
+    this.socket.emit('cursor-move', { 
+      x, y, color, 
+      name: this.username // Send the name!
     });
   }
 }
