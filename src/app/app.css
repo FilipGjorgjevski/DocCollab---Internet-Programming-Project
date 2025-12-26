@@ -1,0 +1,205 @@
+.container {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column; /* Stack toolbar and paper */
+  align-items: center;
+  padding-top: 20px;
+}
+
+/* --- TOOLBAR STYLES --- */
+.toolbar {
+  background: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 100; /* Above the editor */
+}
+
+.toolbar button, .toolbar select {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.toolbar button:hover {
+  background: #eee;
+}
+
+.color-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.color-wrapper input[type="color"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* --- EDITOR STYLES --- */
+.editor {
+  width: 800px;
+  height: 80vh;
+  padding: 50px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  outline: none;
+  font-family: 'Times New Roman', Times, serif; /* Look like a real doc */
+  font-size: 18px;
+  overflow-y: auto;
+  z-index: 10;
+  white-space: pre-wrap; /* Preserve spaces/lines */
+}
+
+/* Cursor styles remain the same */
+.remote-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s linear;
+}
+
+.cursor-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.cursor-label {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Shift the main container slightly left so the paper is centered in the REMAINING space */
+.container {
+  padding-right: 320px; /* Make room for the chat sidebar */
+}
+
+/* --- CHAT SIDEBAR --- */
+.chat-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  background: white;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  z-index: 200; /* Above everything */
+  font-family: sans-serif;
+}
+
+.chat-header {
+  padding: 15px;
+  background: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.chat-history {
+  flex: 1; /* Takes up all available space */
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.user-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px; /* Align with text */
+  flex-shrink: 0;
+}
+
+.message-content {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 85%;
+}
+
+.message-text {
+  font-size: 14px;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 10px;
+  color: #888;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Chat Input */
+.chat-input {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  gap: 5px;
+  background: white;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.chat-input button {
+  padding: 8px 15px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background: #0056b3;
+}
