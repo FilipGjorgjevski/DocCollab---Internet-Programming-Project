@@ -1,0 +1,25 @@
+<div class="toolbar">
+  <button (click)="onAction('bold')" title="Bold"><b>B</b></button>
+  <button (click)="onAction('italic')" title="Italic"><i>I</i></button>
+  <button (click)="onAction('underline')" title="Underline"><u>U</u></button>
+  
+  <!-- Font Size -->
+  <select (change)="onColorChange('fontSize', $event)" title="Font Size">
+    <option value="3">Normal</option>
+    <option value="1">Small</option>
+    <option value="5">Large</option>
+    <option value="7">Huge</option>
+  </select>
+
+  <!-- Text Color -->
+  <span class="color-wrapper" title="Text Color">
+    <span>A</span>
+    <input type="color" (input)="onColorChange('foreColor', $event)">
+  </span>
+
+  <!-- Highlight Color -->
+  <span class="color-wrapper" title="Highlight Color" style="background: yellow;">
+    <span>H</span>
+    <input type="color" (input)="onColorChange('hiliteColor', $event)">
+  </span>
+</div>

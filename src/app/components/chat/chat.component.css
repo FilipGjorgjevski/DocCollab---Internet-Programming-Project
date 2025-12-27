@@ -1,0 +1,122 @@
+.chat-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  background: white;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  font-family: sans-serif;
+}
+
+.chat-header {
+  padding: 15px;
+  background: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.chat-history {
+  flex: 1; /* Takes up all available vertical space */
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Scrollbar styling */
+.chat-history::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-history::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
+
+.chat-bubble {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.user-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.message-content {
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 85%;
+}
+
+.sender-name {
+  font-size: 10px; 
+  font-weight: bold; 
+  color: #555; 
+  margin-bottom: 2px;
+}
+
+.message-text {
+  font-size: 14px;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 10px;
+  color: #888;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.chat-input {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  gap: 5px;
+  background: white;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+.chat-input button {
+  padding: 8px 15px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chat-input button:hover {
+  background: #0056b3;
+}
+
+/* Mobile Responsive Hide */
+@media (max-width: 768px) {
+  .chat-sidebar {
+    display: none; /* Hide chat on mobile for simpler layout */
+  }
+}

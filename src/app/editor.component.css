@@ -71,7 +71,6 @@
   white-space: pre-wrap; /* Preserve spaces/lines */
 }
 
-/* Cursor styles remain the same */
 .remote-cursor {
   position: absolute;
   top: 0;
@@ -202,4 +201,10 @@
 
 .chat-input button:hover {
   background: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .chat-sidebar { display: none; }
+  .container { padding-right: 0; }
+  .editor { width: 95%; }
 }

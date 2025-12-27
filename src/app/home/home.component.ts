@@ -10,7 +10,7 @@ import { SocketService } from '../services/sockets';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="login-container">
-      <h1>Welcome to CollabEdit</h1>
+      <h1>Welcome to DocCollab</h1>
       <p>Real-time document editing with your team.</p>
       
       <div class="input-group">

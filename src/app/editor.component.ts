@@ -3,38 +3,47 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { SocketService } from './services/sockets';
 
+// --- IMPORTS FOR CHILD COMPONENTS ---
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { CursorLayerComponent } from './components/cursor-layer/cursor-layer.component';
+import { ChatComponent } from './components/chat/chat.component';
+
 @Component({
   selector: 'app-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  // CRITICAL: You must import your child components here so the HTML recognizes them
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    ToolbarComponent, 
+    CursorLayerComponent, 
+    ChatComponent
+  ],
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
   
-  // Access the editable div
+  // Access the editable div directly
   @ViewChild('editor') editor!: ElementRef;
 
   // --- STATE VARIABLES ---
-  // Cursors now store 'name' (optional string)
   cursors: { [key: string]: { x: number, y: number, color: string, name?: string } } = {};
-  
-  // Chat now stores 'name'
   chatMessages: { text: string, color: string, time: Date, name?: string }[] = [];
   
-  currentMessage: string = '';
+  // Assign a random color to this user
   myColor: string = '#' + Math.floor(Math.random() * 16777215).toString(16);
 
   constructor(private socketService: SocketService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    // 1. Listen for Cursors
+    // 1. Listen for Cursor Movements
     this.socketService.onCursorMove().subscribe((data: any) => {
       this.cursors[data.id] = { 
         x: data.x, 
         y: data.y, 
-        color: data.color,
-        name: data.name // Capture name
+        color: data.color, 
+        name: data.name 
       };
       this.cdr.detectChanges();
     });
@@ -45,53 +54,57 @@ export class EditorComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    // 3. Listen for Text Changes
-// Inside ngOnInit
+    // 3. Listen for Text Updates
     this.socketService.onTextUpdate().subscribe((htmlContent: string) => {
-      // If the server sends valid text (even empty string is valid), update.
-      // But we check if it's different to prevent cursor jumping.
+      // Only update if the content is different to prevent cursor jumping
       if (this.editor && this.editor.nativeElement.innerHTML !== htmlContent) {
         this.editor.nativeElement.innerHTML = htmlContent;
       }
     });
 
-    // 4. Listen for Chat
+    // 4. Listen for Chat Messages
     this.socketService.onChatReceive().subscribe((data: any) => {
       this.chatMessages.push({
         text: data.text,
         color: data.color,
         time: new Date(data.timestamp),
-        name: data.name // Capture name
+        name: data.name
       });
       this.cdr.detectChanges();
       this.scrollToBottom();
     });
   }
 
-  // --- EDITOR METHODS ---
+  // --- DOCUMENT LOGIC ---
+
+  // Called when YOU type in the editable div
   onContentChange() {
     const html = this.editor.nativeElement.innerHTML;
     this.socketService.emitText(html);
   }
 
+  // Called when the Toolbar Component emits an action
+  handleToolbarAction(event: { cmd: string, value?: string }) {
+    this.formatDoc(event.cmd, event.value);
+  }
+
+  // Executes the command on the document
   formatDoc(cmd: string, value: string | undefined = undefined) {
     document.execCommand(cmd, false, value);
-    this.editor.nativeElement.focus();
-    this.onContentChange();
+    this.editor.nativeElement.focus(); // Keep focus on the paper
+    this.onContentChange(); // Save changes
   }
 
-  onColorChange(cmd: string, event: any) {
-    this.formatDoc(cmd, event.target.value);
-  }
+  // --- CHAT LOGIC ---
 
-  // --- CHAT METHODS ---
-  sendMessage() {
-    if (this.currentMessage.trim()) {
-      this.socketService.emitChat(this.currentMessage, this.myColor);
-      this.currentMessage = '';
+  // Called when the Chat Component emits a 'send' event
+  sendMessage(text: string) {
+    if (text && text.trim()) {
+      this.socketService.emitChat(text, this.myColor);
     }
   }
 
+  // Auto-scroll chat to the bottom
   scrollToBottom() {
     setTimeout(() => {
       const chatContainer = document.querySelector('.chat-history');
@@ -102,6 +115,8 @@ export class EditorComponent implements OnInit {
   }
 
   // --- MOUSE TRACKING ---
+  
+  // Listens to mouse movement anywhere on the page
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent) {
     this.socketService.emitCursor(event.pageX, event.pageY, this.myColor);

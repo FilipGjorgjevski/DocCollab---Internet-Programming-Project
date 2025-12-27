@@ -1,0 +1,15 @@
+<div 
+  *ngFor="let cursor of cursors | keyvalue"
+  class="remote-cursor"
+  [style.transform]="'translate3d(' + cursor.value.x + 'px, ' + cursor.value.y + 'px, 0)'">
+  
+  <svg class="cursor-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19177L11.7841 12.3673H5.65376Z" 
+          [style.fill]="cursor.value.color" stroke="white" stroke-width="1"/>
+  </svg>
+  
+  <div class="cursor-label" [style.backgroundColor]="cursor.value.color">
+    <!-- ADDED $any(...) to fix the type error -->
+    {{ (cursor.value.name && cursor.value.name !== 'Anonymous') ? cursor.value.name : 'User ' + $any(cursor.key).substr(0, 4) }}
+  </div>
+</div>  
